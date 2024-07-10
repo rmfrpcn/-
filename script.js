@@ -2,39 +2,53 @@
 let xs, trueYs, eulerResult, rkResult;
 let currentStep = 0;
 let totalSteps = 0;
-let startY;
+let startX, startY;
 
 // オイラー法の計算関数
-function eulerMethod(func, x0, y0, steps, h) {
-    let xs = [x0];
-    let ys = [y0];
+function eulerMethod(func, x0, y0, xmax, h) {
+    let xs = [];
+    let ys = [];
     let x = x0, y = y0;
+    let ESP = 0.00000001
+    let dx = 1.0, ddx = x0;
 
-    for (let i = 0; i < steps; i++) {
+    while (x <= xmax + ESP) {
+        if (x > ddx - ESP) {
+            ddx += dx;
+            xs.push(x);
+            ys.push(y);
+        }
+
         y += h * func(x);
         x += h;
-        xs.push(x);
-        ys.push(y);
     }
     return { xs, ys };
 }
 
 // ルンゲクッタ法の計算関数
-function rungeKuttaMethod(func, x0, y0, steps, h) {
-    let xs = [x0];
-    let ys = [y0];
+function rungeKuttaMethod(func, x0, y0, xmax, h) {
+    let xs = [];
+    let ys = [];
     let x = x0, y = y0;
+    let ESP = 0.00000001
+    let dx = 1.0, ddx = x0, k1, k2, k3, k4;
 
-    for (let i = 0; i < steps; i++) {
-        let k1 = h * func(x, y);
-        let k2 = h * func(x + h / 2, y + k1 / 2);
-        let k3 = h * func(x + h / 2, y + k2 / 2);
-        let k4 = h * func(x + h, y + k3);
-        y += (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+    while (x <= xmax + ESP) {
+        if (x >= ddx - ESP) {
+            ddx += dx;
+            xs.push(x);
+            ys.push(y);
+        }
+
+        k1 = func(x, y);
+        k2 = func(x + h / 2.0, y + h * k1 / 2.0);
+        k3 = func(x + h / 2.0, y + h * k2 / 2.0);
+        k4 = func(x + h, y + k3 * h);
+
+        y += (h / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
         x += h;
-        xs.push(x);
-        ys.push(y);
     }
+
     return { xs, ys };
 }
 
@@ -62,12 +76,12 @@ document.getElementById('run-btn').addEventListener('click', function () {
     let b = parseFloat(document.getElementById('b').value);
     let c = parseFloat(document.getElementById('c').value);
     let d = parseFloat(document.getElementById('d').value);
-    let startX = parseFloat(document.getElementById('start-x').value);
-    totalSteps = parseInt(document.getElementById('steps').value);
+    startX = parseFloat(document.getElementById('start-x').value);
+    totalSteps = parseInt(document.getElementById('xmax').value);
     let interval = parseFloat(document.getElementById('interval').value);
     let mode = document.getElementById('mode').value;
 
-    // デフォルト値の設定
+    // 初期値の設定
     a = isNaN(a) ? 0 : a;
     b = isNaN(b) ? 0 : b;
     c = isNaN(c) ? 2 : c;
@@ -90,10 +104,10 @@ document.getElementById('run-btn').addEventListener('click', function () {
     startY = originalFunc(startX);
 
     // グラフ描画の準備
-    xs = Array.from({ length: totalSteps + 1 }, (_, i) => startX + i * interval);
+    xs = Array.from({ length: totalSteps - startX + 1 }, (_, i) => startX + i );
     trueYs = xs.map(originalFunc);
-    eulerResult = eulerMethod(func, startX, startY, totalSteps, interval);
-    rkResult = rungeKuttaMethod(func, startX, startY, totalSteps, interval);
+    eulerResult = eulerMethod(func, startX, startY, totalSteps + 1 , interval);
+    rkResult = rungeKuttaMethod(func, startX, startY, totalSteps + 1 , interval);
 
     // 現在のステップをリセット
     currentStep = 0;
@@ -109,7 +123,7 @@ document.getElementById('run-btn').addEventListener('click', function () {
         document.getElementById('run-btn').style.display = 'inline-block';
         document.getElementById('next-btn').style.display = 'none';
         // 自動モードの場合、全ステップを表示
-        currentStep = totalSteps;
+        currentStep = totalSteps - startX;
         updateGraph();
     }
 });
@@ -124,7 +138,7 @@ document.querySelectorAll('input[type=checkbox]').forEach(function (el) {
 // 次へボタンのクリック処理（手動モードのみ）
 document.getElementById('next-btn').addEventListener('click', function () {
     currentStep++;
-    if (currentStep <= totalSteps) {
+    if (currentStep <= totalSteps - startX) {
         updateGraph();
     } else {
         alert('すべてのステップが完了しました。リセットしてください。');
@@ -139,8 +153,8 @@ document.getElementById('reset-btn').addEventListener('click', function () {
     document.getElementById('c').value = '2';
     document.getElementById('d').value = '0';
     document.getElementById('start-x').value = '0';
-    document.getElementById('steps').value = '10';
-    document.getElementById('interval').value = '1';
+    document.getElementById('xmax').value = '10';
+    document.getElementById('interval').value = '0.1';
     document.getElementById('mode').value = 'auto';
 
     // ボタンの初期表示状態に戻す
