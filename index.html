@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微分方程式シミュレーション</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>微分方程式シミュレーション</h1>
+    <div id="controls">
+        <strong>導関数: ax^3 + bx^2 + cx + d</strong><br>
+        <label for="a">3次の係数 (a):</label>
+        <input type="number" id="a" value="0">
+        <label for="b">2次の係数 (b):</label>
+        <input type="number" id="b" value="0">
+        <label for="c">1次の係数 (c):</label>
+        <input type="number" id="c" value="2">
+        <label for="d">定数項 (d):</label>
+        <input type="number" id="d" value="0"><br>
+        <label for="start">始点 (x0):</label>
+        <input type="number" id="start-x" value="0"><br>
+        <label for="steps">点の個数:</label>
+        <input type="number" id="steps" value="10"><br>
+        <label for="interval">点のx座標の間隔:</label>
+        <input type="number" id="interval" value="1"><br>
+        <label for="mode">表示モード:</label>
+        <select id="mode">
+            <option value="auto">自動</option>
+            <option value="manual">手動</option>
+        </select><br>
+        <button id="run-btn">実行</button>
+        <button id="next-btn" style="display: none;">次へ</button> <!-- 次へボタン -->
+        <button id="reset-btn">リセット</button> <!-- リセットボタン -->
+    </div>
+    <div id="plot"></div>
+    <script src="script.js"></script>
+</body>
+</html>
