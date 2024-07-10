@@ -27,10 +27,10 @@ function rungeKuttaMethod(func, x0, y0, steps, h) {
 
     for (let i = 0; i < steps; i++) {
         let k1 = h * func(x, y);
-        let k2 = h * func(x + h/2, y + k1/2);
-        let k3 = h * func(x + h/2, y + k2/2);
+        let k2 = h * func(x + h / 2, y + k1 / 2);
+        let k3 = h * func(x + h / 2, y + k2 / 2);
         let k4 = h * func(x + h, y + k3);
-        y += (k1 + 2*k2 + 2*k3 + k4) / 6;
+        y += (k1 + 2 * k2 + 2 * k3 + k4) / 6;
         x += h;
         xs.push(x);
         ys.push(y);
@@ -38,8 +38,25 @@ function rungeKuttaMethod(func, x0, y0, steps, h) {
     return { xs, ys };
 }
 
+// チェックボックスの状態に応じてグラフを更新する関数
+function updateGraph() {
+    let data = [];
+    if (document.getElementById('original-checkbox').checked) {
+        data.push({ x: xs, y: trueYs, mode: 'lines', name: '原関数', line: { color: 'black' } });
+    }
+    if (document.getElementById('euler-checkbox').checked) {
+        data.push({ x: eulerResult.xs.slice(0, currentStep + 1), y: eulerResult.ys.slice(0, currentStep + 1), mode: 'lines+markers', name: 'オイラー', line: { color: 'red' } });
+    }
+    if (document.getElementById('rk-checkbox').checked) {
+        data.push({ x: rkResult.xs.slice(0, currentStep + 1), y: rkResult.ys.slice(0, currentStep + 1), mode: 'lines+markers', name: 'ルンゲクッタ', line: { color: 'blue' } });
+    }
+
+    let layout = { title: '微分方程式シミュレーション', xaxis: { title: 'x' }, yaxis: { title: 'y' } };
+    Plotly.newPlot('plot', data, layout);
+}
+
 // 実行ボタンのクリック処理
-document.getElementById('run-btn').addEventListener('click', function() {
+document.getElementById('run-btn').addEventListener('click', function () {
     // パラメータの取得と計算
     let a = parseFloat(document.getElementById('a').value);
     let b = parseFloat(document.getElementById('b').value);
@@ -66,7 +83,7 @@ document.getElementById('run-btn').addEventListener('click', function() {
 
     // 原関数の定義
     function originalFunc(x) {
-        return a * Math.pow(x, 4) / 4 +  b * Math.pow(x, 3) / 3 + c * Math.pow(x, 2) / 2 + d * x;
+        return a * Math.pow(x, 4) / 4 + b * Math.pow(x, 3) / 3 + c * Math.pow(x, 2) / 2 + d * x;
     }
 
     // 初期値の設定
@@ -78,44 +95,44 @@ document.getElementById('run-btn').addEventListener('click', function() {
     eulerResult = eulerMethod(func, startX, startY, totalSteps, interval);
     rkResult = rungeKuttaMethod(func, startX, startY, totalSteps, interval);
 
-    // Plotlyを使用したグラフ描画
-    let data = [
-        { x: xs, y: trueYs, mode: 'lines', name: '原関数', line: { color: 'black' } },
-        { x: eulerResult.xs, y: eulerResult.ys, mode: 'lines+markers', name: 'オイラー', line: { color: 'red' } },
-        { x: rkResult.xs, y: rkResult.ys, mode: 'lines+markers', name: 'ルンゲクッタ', line: { color: 'blue' } }
-    ];
+    // 現在のステップをリセット
+    currentStep = 0;
 
-    let layout = { title: '微分方程式シミュレーション', xaxis: { title: 'x' }, yaxis: { title: 'y' } };
-    Plotly.newPlot('plot', data, layout);
+    // グラフを更新
+    updateGraph();
 
     // 実行ボタン非表示、次へボタン表示（手動モードのみ）
     if (mode === 'manual') {
         document.getElementById('run-btn').style.display = 'none';
         document.getElementById('next-btn').style.display = 'inline-block';
-        currentStep = 0;
     } else {
         document.getElementById('run-btn').style.display = 'inline-block';
         document.getElementById('next-btn').style.display = 'none';
+        // 自動モードの場合、全ステップを表示
+        currentStep = totalSteps;
+        updateGraph();
     }
 });
 
+// チェックボックスの変更時にグラフを更新
+document.querySelectorAll('input[type=checkbox]').forEach(function (el) {
+    el.addEventListener('change', function () {
+        updateGraph();
+    });
+});
+
 // 次へボタンのクリック処理（手動モードのみ）
-document.getElementById('next-btn').addEventListener('click', function() {
+document.getElementById('next-btn').addEventListener('click', function () {
     currentStep++;
-    if (currentStep <= totalSteps+1) {
-        let updatedData = [
-            { x: xs, y: trueYs, mode: 'lines', name: '原関数', line: { color: 'black' } },
-            { x: eulerResult.xs.slice(0, currentStep), y: eulerResult.ys.slice(0, currentStep), mode: 'lines+markers', name: 'オイラー', line: { color: 'red' } },
-            { x: rkResult.xs.slice(0, currentStep), y: rkResult.ys.slice(0, currentStep), mode: 'lines+markers', name: 'ルンゲクッタ', line: { color: 'blue' } }
-        ];
-        Plotly.newPlot('plot', updatedData);
+    if (currentStep <= totalSteps) {
+        updateGraph();
     } else {
         alert('すべてのステップが完了しました。リセットしてください。');
     }
 });
 
 // リセットボタンのクリック処理
-document.getElementById('reset-btn').addEventListener('click', function() {
+document.getElementById('reset-btn').addEventListener('click', function () {
     // 入力欄の初期化
     document.getElementById('a').value = '0';
     document.getElementById('b').value = '0';

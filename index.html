@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
     <h1>微分方程式シミュレーション</h1>
     <div id="controls">
@@ -30,6 +32,14 @@
             <option value="auto">自動</option>
             <option value="manual">手動</option>
         </select><br>
+        <strong>表示する関数:</strong>
+        <input type="checkbox" id="original-checkbox" checked>
+        <label for="original-checkbox">原関数</label>
+        <input type="checkbox" id="euler-checkbox" checked>
+        <label for="euler-checkbox">オイラー法</label>
+        <input type="checkbox" id="rk-checkbox" checked>
+        <label for="rk-checkbox">ルンゲクッタ法</label>
+        <br>
         <button id="run-btn">実行</button>
         <button id="next-btn" style="display: none;">次へ</button> <!-- 次へボタン -->
         <button id="reset-btn">リセット</button> <!-- リセットボタン -->
@@ -37,4 +47,5 @@
     <div id="plot"></div>
     <script src="script.js"></script>
 </body>
+
 </html>
