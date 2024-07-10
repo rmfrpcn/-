@@ -59,10 +59,10 @@ function updateGraph() {
         data.push({ x: xs, y: trueYs, mode: 'lines', type: 'scatter', name: '原関数', line: { color: 'black' } });
     }
     if (document.getElementById('euler-checkbox').checked) {
-        data.push({ x: eulerResult.xs.slice(0, currentStep + 1), y: eulerResult.ys.slice(0, currentStep + 1), mode: 'lines', type: 'scatter', name: 'オイラー', line: { color: 'red' } });
+        data.push({ x: eulerResult.xs.slice(0, currentStep + 1), y: eulerResult.ys.slice(0, currentStep + 1), mode: 'lines+markers', type: 'scatter', name: 'オイラー', line: { color: 'red' } });
     }
     if (document.getElementById('rk-checkbox').checked) {
-        data.push({ x: rkResult.xs.slice(0, currentStep + 1), y: rkResult.ys.slice(0, currentStep + 1), mode: 'lines', type: 'scatter', name: 'ルンゲクッタ', line: { color: 'blue' } });
+        data.push({ x: rkResult.xs.slice(0, currentStep + 1), y: rkResult.ys.slice(0, currentStep + 1), mode: 'lines+markers', type: 'scatter', name: 'ルンゲクッタ', line: { color: 'blue' } });
     }
 
     let layout = { title: '微分方程式シミュレーション', xaxis: { title: 'x' }, yaxis: { title: 'y' } };
