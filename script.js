@@ -14,7 +14,7 @@ function eulerMethod(func, x0, y0, xmax, h) {
 
     while (x <= xmax + ESP) {
         if (x > ddx - ESP) {
-            ddx += dx;
+            ddx += dx;r
             xs.push(x);
             ys.push(y);
         }
@@ -50,7 +50,7 @@ function rungeKuttaMethod(func, x0, y0, xmax, h) {
     }
 
     return { xs, ys };
-}
+}tt
 
 // グラフの更新
 function updateGraph() {
@@ -90,7 +90,7 @@ document.getElementById('run-btn').addEventListener('click', function () {
     totalSteps = isNaN(totalSteps) ? 10 : totalSteps;
     interval = isNaN(interval) ? 1 : interval;
 
-    // 関数の定義
+    // 導関数の定義
     function func(x) {
         return a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d;
     }
