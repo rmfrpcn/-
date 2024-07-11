@@ -95,11 +95,6 @@ document.getElementById('run-btn').addEventListener('click', function () {
         return a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d;
     }
 
-    // 原関数の定義
-    function originalFunc(x) {
-        return a * Math.pow(x, 4) / 4 + b * Math.pow(x, 3) / 3 + c * Math.pow(x, 2) / 2 + d * x;
-    }
-
     // 初期値の設定
     startY = originalFunc(startX);
 
