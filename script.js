@@ -50,7 +50,7 @@ function rungeKuttaMethod(func, x0, y0, xmax, h) {
     }
 
     return { xs, ys };
-}tt
+}
 
 // グラフの更新
 function updateGraph() {
