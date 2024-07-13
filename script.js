@@ -14,7 +14,7 @@ function eulerMethod(func, x0, y0, xmax, h) {
 
     while (x <= xmax + ESP) {
         if (x > ddx - ESP) {
-            ddx += dx;r
+            ddx += dx;
             xs.push(x);
             ys.push(y);
         }
@@ -89,6 +89,11 @@ document.getElementById('run-btn').addEventListener('click', function () {
     startX = isNaN(startX) ? 0 : startX;
     totalSteps = isNaN(totalSteps) ? 10 : totalSteps;
     interval = isNaN(interval) ? 1 : interval;
+
+    // 原関数の定義
+    function originalFunc(x) {
+        return a * Math.pow(x, 4) / 4 + b * Math.pow(x, 3) / 3 + c * Math.pow(x, 2) / 2 + d * x;
+    }
 
     // 導関数の定義
     function func(x) {
